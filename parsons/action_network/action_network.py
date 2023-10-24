@@ -427,3 +427,23 @@ class ActionNetwork(object):
         event_dict["event_id"] = an_event_id
 
         return event_dict
+
+    def get_messages(self, limit=None, per_page=25, page=None):
+        """
+        `Args:`
+            limit:
+                The number of entries to return. When None, returns all entries.
+            per_page
+                The number of entries per page to return. 25 maximum.
+            page
+                Which page of results to return
+        `Returns:`
+            A list of JSONs of messages stored in Action Network.
+        """
+        if page:
+            return self._get_page("messages", page, per_page)
+        messages = self._get_entry_list("messages", limit, per_page)
+        # TODO: parse the message JSON into a more useful format
+        messages.unpack_dict("statistics", prepend=False)
+        return messages
+
