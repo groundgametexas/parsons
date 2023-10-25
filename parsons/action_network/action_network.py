@@ -443,7 +443,6 @@ class ActionNetwork(object):
         if page:
             return self._get_page("messages", page, per_page)
         messages = self._get_entry_list("messages", limit, per_page)
-        # TODO: parse the message JSON into a more useful format
         messages.unpack_dict("statistics", prepend=False)
         return messages
 
