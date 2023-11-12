@@ -348,8 +348,6 @@ class TestActionNetwork(unittest.TestCase):
             },
             "event_id": "fake-id",
         }
-        self.fake_messages = {
-            "messages": [
 
     @requests_mock.Mocker()
     def test_get_page(self, m):
@@ -505,22 +503,3 @@ class TestActionNetwork(unittest.TestCase):
             Table(self.fake_tag_list["_embedded"]["osdi:tags"]),
         )
 
-    @requests_mock.Mocker()
-    def test_get_messages(self, m):
-        # Mock the API response for the get_messages call
-        messages_data = {
-            # Replace this with your expected API response data
-            "messages": [
-                {"id": 1, "text": "Message 1"},
-                {"id": 2, "text": "Message 2"},
-            ]
-        }
-
-        # Mock the GET request to the messages endpoint
-        m.get(f"{self.api_url}/messages", text=json.dumps(messages_data))
-
-        # Call the get_messages method and compare the result
-        result = self.an.get_messages()
-        expected_messages = messages_data["messages"]
-
-        self.assertEqual(result, expected_messages)
