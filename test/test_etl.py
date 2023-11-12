@@ -323,6 +323,13 @@ class TestParsonsTable(unittest.TestCase):
         # Test that we can't rename to a column that already exists
         self.assertRaises(ValueError, self.tbl.rename_column, "last", "first")
 
+    def test_rename_columns(self):
+        # Test that columns are renamed correctly
+        tbl = Table([{"first": "Bob", "last": "Smith"}])
+        tbl.rename_columns({"first": "f", "last": "l"})
+        self.assertEqual(tbl.columns, ["f", "l"])
+        self.assertEqual(tbl[0], {"f": "Bob", "l": "Smith"})
+
     def test_fill_column(self):
         # Test that the column is filled
         tbl = Table(self.lst)

@@ -73,6 +73,22 @@ class ETL(object):
         self.table = petl.rename(self.table, column_name, new_column_name)
 
         return self
+    
+    def rename_columns(self, column_map):
+        """
+        Rename multiple columns at once
+
+        `Args:`
+            column_map: dict
+                A dictionary of current column names to new column names
+        `Returns:`
+            `Parsons Table` and also updates self
+        """
+
+        # Use the underlying petl table rename function
+        self.table = petl.rename(self.table, column_map)
+
+        return self
 
     def fill_column(self, column_name, fill_value):
         """
