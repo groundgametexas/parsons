@@ -42,6 +42,7 @@ for module_path, connector_name in (
     ("parsons.bluelink", "Bluelink"),
     ("parsons.box.box", "Box"),
     ("parsons.braintree.braintree", "Braintree"),
+    ("parsons.callhub.callhub", "CallHub"),
     ("parsons.capitol_canary.capitol_canary", "CapitolCanary"),
     ("parsons.civis.civisclient", "CivisClient"),
     ("parsons.controlshift.controlshift", "Controlshift"),
