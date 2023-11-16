@@ -1,5 +1,6 @@
 from parsons.utilities import json_format
 import logging
+from parsons.etl.table import Table
 
 logger = logging.getLogger(__name__)
 
@@ -734,7 +735,7 @@ class People(object):
 
     def get_people(
         self,
-        limit=1000,
+        limit=200,
         offset=0,
         fields=None,
         firstName=None,
@@ -756,6 +757,8 @@ class People(object):
     ):
         """
         Get a list of people.
+
+        At least one search parameter must be provided.
 
         `Args:`
             limit: int
@@ -828,4 +831,10 @@ class People(object):
         if fields:
             params["$fields"] = ",".join(fields)
 
-        return self.connection.get_request("people", params=params)
+        data = self.connection._get_people_get_request("people", params=params)
+        if data:
+            tbl = Table(data)
+        else:
+            tbl = Table()
+
+        return tbl

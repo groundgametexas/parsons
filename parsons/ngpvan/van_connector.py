@@ -107,3 +107,15 @@ class VANConnector(object):
     def put_request(self, endpoint, **kwargs):
 
         return self.api.put_request(endpoint, **kwargs)
+
+    def _get_people_get_request(self, endpoint, **kwargs):
+
+        r = self.api.get_request(self.uri + endpoint, **kwargs)
+        data = self.api.data_parse(r)
+
+        # Paginate
+        while r[self.pagination_key]:
+            r = self.api.get_request(r[self.pagination_key])  # **kwargs
+            data.extend(self.api.data_parse(r))
+
+        return data
