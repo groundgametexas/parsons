@@ -117,5 +117,8 @@ class VANConnector(object):
         while r[self.pagination_key]:
             r = self.api.get_request(r[self.pagination_key])  # **kwargs
             data.extend(self.api.data_parse(r))
+            # Log the records we have collected every 1000 records
+            if len(data) % 1000 == 0:
+                logger.info(f"Retrieved {len(data)} records.")
 
         return data
