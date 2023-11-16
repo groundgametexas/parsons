@@ -731,3 +731,101 @@ class People(object):
 
         r = self.connection.put_request(url, json=json)
         return r
+
+    def get_people(
+        self,
+        limit=1000,
+        offset=0,
+        fields=None,
+        firstName=None,
+        middleName=None,
+        lastName=None,
+        streetAddress=None,
+        city=None,
+        stateOrProvince=None,
+        zipOrPostalCode=None,
+        phoneNumber=None,
+        email=None,
+        commonName=None,
+        officialName=None,
+        contactMode=None,
+        top=None,
+        skip=None,
+        expand=None,
+        orderby=None,
+    ):
+        """
+        Get a list of people.
+
+        `Args:`
+            limit: int
+                The number of records to return. Defaults to 1000.
+            offset: int
+                The number of records to skip. Defaults to 0.
+            fields: list
+                A list of fields to return. Leave as default for all available fields.
+            firstName: str
+                The person's first name.
+            middleName: str
+                The person's middle name.
+            lastName: str
+                The person's last name.
+            streetAddress: str
+                The person's street address.
+            city: str
+                The person's city.
+            stateOrProvince: str
+                Must be a valid state or province code (two or three characters)
+            zipOrPostalCode: str
+                Must be a valid ZIP5 zip code or postal code.
+                For UK clients, this parameter accepts valid partial postcodes
+                (e.g., postcode sector).
+            phoneNumber: str
+                The person's phone number.
+            email: str
+                The person's email address.
+            commonName: str
+                If Organizations-as-Contacts is enabled in your database,
+                matches organizations whose Common Name begins with this value.
+            officialName: str
+                If Organizations-as-Contacts is enabled in your database,
+                matches organizations whose Official Name begins with this value.
+            contactMode: str
+                If Organizations-as-Contacts is enabled in your database,
+                filters to records of this type.
+                Person or Organization
+            top: int
+                The number of records to return. Defaults to 1000.
+            skip: int
+                The number of records to skip. Defaults to 0.
+            expand: str
+                Valid $expand sections are are Addresses, Districts, Emails, and Phones.
+            orderby: str
+                Name asc and Name desc are the only valid $orderby arguments
+        `Returns:`
+            A list of people dicts.
+        """
+
+        params = {
+            "$top": limit,
+            "$skip": offset,
+            "$expand": expand,
+            "$orderby": orderby,
+            "firstName": firstName,
+            "middleName": middleName,
+            "lastName": lastName,
+            "streetAddress": streetAddress,
+            "city": city,
+            "stateOrProvince": stateOrProvince,
+            "zipOrPostalCode": zipOrPostalCode,
+            "phoneNumber": phoneNumber,
+            "email": email,
+            "commonName": commonName,
+            "officialName": officialName,
+            "contactMode": contactMode,
+        }
+
+        if fields:
+            params["$fields"] = ",".join(fields)
+
+        return self.connection.get_request("people", params=params)
