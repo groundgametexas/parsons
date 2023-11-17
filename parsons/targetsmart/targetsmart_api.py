@@ -399,6 +399,113 @@ class Voter(object):
 
         return self.connection.request(url, args=args, raw=True)
 
+    def voter_suggest(
+        self,
+        first_name=None,
+        middle_name=None,
+        last_name=None,
+        street_number=None,
+        street_name=None,
+        city=None,
+        state=None,
+        zip_code=None,
+        county=None,
+        phone=None,
+        email=None,
+        age=None,
+        dob=None,
+        max_results=25,
+    ):
+
+        """
+        Search TargetSmart’s service database to identify a
+        registered voter using search inputs that can be refined.
+        This service was designed to support low-latency interactive search user interfaces
+        allowing a user to find a voter record with minimal keystrokes.
+        Common use cases include petition verification and field voter record lookup.
+        Voter suggest is a great tool for locating voters
+        when incomplete information is available.
+
+        Each request uses required and allowed keys.
+        The state or zip_code are required. If zip_code is provided and not state,
+        the leading 3 digits in the zip_code will be used to look up the correct state.
+
+        Additionally, each query must provide at least one valid character
+        for any of the following:
+        first_name, last_name, middle_name, street_name, phone, or email.
+        All other allowed keys shown in the following table are optional.
+        Key values may contain a url-encoded (%2A) asterix (*) as a wildcard,
+        but cannot start with *.
+
+        `Args:`
+            first_name (str, optional):
+                Alpha character followed by 0 or more * or alpha characters.
+            middle_name (str, optional):
+                Alpha character followed by 0 or more * or alpha characters.
+            last_name (str, optional):
+                Alpha character followed by 0 or more * or alpha characters.
+            street_number (str, optional):
+                Alphanumeric character followed by 0 or more * or alphanumeric characters.
+            street_name (str, optional):
+                Alphanumeric character followed by 0 or more * or alphanumeric characters.
+            city (str, optional):
+                Alpha character followed by 0 or more * or alpha characters.
+            state (str, optional):
+                Two character U.S. state code (e.g. NY). Required if zip_code is not provided.
+            zip_code (str, optional):
+                3 Integers followed by 2 or more * or integers.
+                Required if state is not provided.
+            county (str, optional):
+                Alphanumeric character followed by 0 or more * or alphanumeric characters.
+            phone (str, optional):
+                Integer followed by 0 or more * or integers.
+            email (str, optional):
+                Alphanumeric character followed by 0 or more *
+                or legal characters (alphanumeric, @, -, .).
+            age (str, optional):
+                Integer followed by 0 or more * or integers.
+            dob (str, optional):
+                Integers in YYYYMMDD format.
+            max_results (int, optional):
+                An integer in the range [1 - 50]. Defaults to 25.
+
+        `Returns:`
+            Parsons Table.
+                See :ref:`parsons-table` for output options.
+        """
+
+        url = self.connection.uri + "voter/voter-suggest"
+
+        args = {
+            "first_name": first_name,
+            "middle_name": middle_name,
+            "last_name": last_name,
+            "street_number": street_number,
+            "street_name": street_name,
+            "city": city,
+            "state": state,
+            "zip_code": zip_code,
+            "county": county,
+            "phone": phone,
+            "email": email,
+            "age": age,
+            "dob": dob,
+            "max_results": max_results,
+        }
+
+        if not (state or zip_code):
+            raise ValueError("State or zip_code is required")
+
+        if not (
+            first_name or last_name or middle_name or street_name or phone or email
+        ):
+            raise ValueError(
+                "At least one of the following is required: "
+                "first_name, last_name, middle_name, street_name, phone, or email"
+            )
+
+        return self.connection.request(url, args=args, raw=True)
+
 
 class TargetSmartAPI(Voter, Person, Service, SmartMatch):
     def __init__(self, api_key=None):
