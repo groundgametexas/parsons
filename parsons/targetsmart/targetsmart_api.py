@@ -9,6 +9,7 @@ import petl
 import requests
 from parsons.etl.table import Table
 from parsons.utilities import check_env
+from parsons.utilities.format_phone_number import format_phone_number
 
 from .targetsmart_smartmatch import SmartMatch
 
@@ -437,6 +438,9 @@ class Voter(object):
         Key values may contain a url-encoded (%2A) asterix (*) as a wildcard,
         but cannot start with *.
 
+        Learn more at the API documentation:
+        https://docs.targetsmart.com/developers/tsapis/v2/voter/voter-suggest.html
+
         `Args:`
             first_name (str, optional):
                 Alpha character followed by 0 or more * or alpha characters.
@@ -503,6 +507,9 @@ class Voter(object):
                 "At least one of the following is required: "
                 "first_name, last_name, middle_name, street_name, phone, or email"
             )
+
+        if phone:
+            args["phone"] = format_phone_number(phone)
 
         return self.connection.request(url, args=args, raw=True)
 
