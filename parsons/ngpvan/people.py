@@ -750,8 +750,6 @@ class People(object):
         commonName=None,
         officialName=None,
         contactMode=None,
-        top=None,
-        skip=None,
         expand=None,
         orderby=None,
     ):
@@ -762,7 +760,7 @@ class People(object):
 
         `Args:`
             limit: int
-                The number of records to return. Defaults to 1000.
+                The number of records to return. Defaults to 200.
             offset: int
                 The number of records to skip. Defaults to 0.
             fields: list
