@@ -20,7 +20,6 @@ class Airtable(object):
     """
 
     def __init__(self, base_key, table_name, api_key=None):
-
         self.api_key = check_env.check("AIRTABLE_API_KEY", api_key)
         self.client = client(base_key, table_name, self.api_key)
 
@@ -180,4 +179,42 @@ class Airtable(object):
 
         resp = self.client.update(record_id, fields, typecast=typecast)
         logger.info(f"{record_id} updated")
+        return resp
+
+    def batch_upsert_records(
+        self, table, fields_to_merge_on: list[str] = None, typecast=False
+    ):
+        """
+        Upsert multiple records into an Airtable. The columns in your Parsons table must
+        exist in the Airtable. The method will attempt to map based on column name, so the
+        order of the columns is irrelevant.
+
+        `Args:`
+            table: A Parsons Table or list of dicts
+                Insert a Parsons table or list
+            fieldsToMergeOn: list of strings
+                A list with at least one and at most three field names or IDs.
+                IDs must uniquely identify a single record.
+                These cannot be computed fields (formulas, lookups, rollups),
+                and must be one of the following types:
+                number, text, long text, single select, multiple select, date.
+            typecast: boolean
+                Automatic data conversion from string values.
+
+
+        `Returns:`
+            List of dictionaries of inserted rows
+        """
+
+        kwargs = {
+            "typecast": typecast,
+        }
+
+        if fields_to_merge_on:
+            kwargs["performUpsert"] = {"fieldsToMergeOn": fields_to_merge_on}
+
+        if isinstance(table, Table):
+            table = table.to_dicts()
+        resp = self.client._batch_request(client.update, table, **kwargs)
+        logger.info(f"{len(table)} records upserted.")
         return resp
