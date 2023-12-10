@@ -206,15 +206,15 @@ class Airtable(object):
             List of dictionaries of inserted rows
         """
 
-        kwargs = {
-            "typecast": typecast,
-        }
+        kwargs = {}
 
+        if typecast:
+            kwargs.update({"typecast": typecast})
         if fields_to_merge_on:
-            kwargs["performUpsert"] = {"fieldsToMergeOn": fields_to_merge_on}
+            kwargs.update({"fieldsToMergeOn": fields_to_merge_on})
 
         if isinstance(table, Table):
             table = table.to_dicts()
-        resp = self.client._batch_request(client.update, table, **kwargs)
+        resp = self.client._batch_request(client.update_by_field, table, **kwargs)
         logger.info(f"{len(table)} records upserted.")
         return resp
