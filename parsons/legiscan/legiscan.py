@@ -6,9 +6,6 @@ from typing import Optional
 import json
 
 
-BASE_URI = "https://api.legiscan.com/"
-
-
 class LegiScanError(Exception):
     """Exception raised for errors in the LegiScan API.
 
@@ -21,9 +18,15 @@ class LegiScanError(Exception):
 
 
 class Legiscan:
-    def __init__(self, api_key, base_url=BASE_URI):
+    """Interact with the LegiScan API."""
+
+    BASE_URL = "http://api.legiscan.com/?key={0}&op={1}&{2}"
+
+    def __init__(
+        self,
+        api_key: str = None,
+    ):
         self.api_key = api_key or os.getenv("LEGISCAN_API_KEY")
-        self.base_url = base_url
 
     def _url(
         self,
@@ -248,8 +251,11 @@ class Legiscan:
 
         url = self._url(endpoint, params)
         response = self._get(url)
+        dataset_list = response[
+            "datasetlist"
+        ]  # This is necessary to get the actual data
 
-        return response
+        return dataset_list
 
     def get_dataset(
         self,
@@ -271,5 +277,6 @@ class Legiscan:
 
         url = self._url(endpoint, params)
         response = self._get(url)
+        dataset = response["dataset"]  # This is necessary to get the actual data
 
-        return response
+        return dataset
